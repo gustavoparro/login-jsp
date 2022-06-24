@@ -20,10 +20,16 @@ public class AuthServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        String urlPath = request.getParameter("url");
 
         if (email.equals("admin@email.com") && password.equals("1234")) {
             request.getSession().setAttribute("app_user", email);
-            request.getRequestDispatcher("pages/index.jsp").forward(request, response);
+
+            if (urlPath == null || urlPath.equals("null")) {
+                request.getRequestDispatcher("pages/index.jsp").forward(request, response);
+            }
+
+            request.getRequestDispatcher(urlPath).forward(request, response);
         }
 
         request.setAttribute("auth_error","Incorrect email or password");

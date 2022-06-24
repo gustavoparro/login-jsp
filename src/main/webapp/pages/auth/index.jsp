@@ -10,6 +10,8 @@
     <h4>${ auth_error }</h4>
 
     <form action="auth" method="post">
+        <input type="hidden" name="url" value="<%= request.getParameter("url") %>">
+
         <div>
             <label for="email">E-mail:</label><br />
             <input type="email" name="email" id="email">

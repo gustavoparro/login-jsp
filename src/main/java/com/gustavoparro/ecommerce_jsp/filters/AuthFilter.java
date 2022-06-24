@@ -23,8 +23,9 @@ public class AuthFilter implements Filter {
         String user = (String) httpSession.getAttribute("app_user");
         String servletPath = httpServletRequest.getServletPath();
 
-        if ((user == null || user.isBlank() ) && !servletPath.contains("auth")) {
-            httpServletRequest.getRequestDispatcher("auth/index.jsp").forward(request, response);
+        if (user == null && !servletPath.contains("/auth")) {
+            request.setAttribute("auth_error", "Please signin!");
+            request.getRequestDispatcher("auth/index.jsp?url=" + servletPath).forward(request, response);
         }
 
         chain.doFilter(request, response);
