@@ -18,7 +18,14 @@ public class AuthServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
 
+        if (email.equals("admin@email.com") && password.equals("1234")) {
+            request.getRequestDispatcher("pages/index.jsp").forward(request, response);
+        }
+
+        request.getRequestDispatcher("pages/auth/index.jsp").forward(request, response);
     }
 
 }
