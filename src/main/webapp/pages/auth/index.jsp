@@ -7,7 +7,9 @@
 <body>
     <h1>Login</h1>
 
-    <form action="" method="post">
+    <h4>${ auth_error }</h4>
+
+    <form action="auth" method="post">
         <div>
             <label for="email">E-mail:</label><br />
             <input type="email" name="email" id="email">
