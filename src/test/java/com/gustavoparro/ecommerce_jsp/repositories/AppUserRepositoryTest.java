@@ -1,21 +1,24 @@
 package com.gustavoparro.ecommerce_jsp.repositories;
 
 import com.gustavoparro.ecommerce_jsp.models.AppUser;
-import org.junit.jupiter.api.Assertions;
+import org.jasypt.util.password.BasicPasswordEncryptor;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class AppUserRepositoryTest {
 
     private final AppUserRepository appUserRepository = new AppUserRepository();
+    private final BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
 
     @Test
     public void authenticateUser() {
-        Optional<AppUser> optionalAppUser = appUserRepository.authenticateUser(
-                new AppUser(null, null, "gustavo@gmail.com", "123456"));
+        Optional<AppUser> optionalAppUser = appUserRepository.findUserByEmail("gustavo@gmail.com");
 
-        Assertions.assertTrue(optionalAppUser.isPresent());
+        assertTrue(optionalAppUser.isPresent());
+        assertTrue(passwordEncryptor.checkPassword("123456", optionalAppUser.get().getPassword()));
     }
 
 }

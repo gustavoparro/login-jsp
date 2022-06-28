@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.jasypt.util.password.BasicPasswordEncryptor;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import java.util.Optional;
 public class AuthServlet extends HttpServlet {
 
     private final AppUserRepository appUserRepository = new AppUserRepository();
+    private final BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -24,17 +26,24 @@ public class AuthServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String urlPath = request.getParameter("url");
-        Optional<AppUser> optionalAppUser = appUserRepository.authenticateUser(
-                new AppUser(null, null, request.getParameter("email"), request.getParameter("password")));
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        Optional<AppUser> optionalAppUser = appUserRepository.findUserByEmail(email);
 
         if (optionalAppUser.isPresent()) {
-            request.getSession().setAttribute("app_user", optionalAppUser.get().getEmail());
 
-            if (urlPath == null || urlPath.equals("null")) {
-                request.getRequestDispatcher("pages/index.jsp").forward(request, response);
+            if (passwordEncryptor.checkPassword(password, optionalAppUser.get().getPassword())) {
+                request.getSession().setAttribute("app_user", optionalAppUser.get().getEmail());
+
+                if (urlPath == null || urlPath.equals("null")) {
+                    request.getRequestDispatcher("pages/index.jsp").forward(request, response);
+                }
+
+                request.getRequestDispatcher(urlPath).forward(request, response);
             }
 
-            request.getRequestDispatcher(urlPath).forward(request, response);
+            request.setAttribute("auth_error","Incorrect email or password");
+            request.getRequestDispatcher("pages/auth/index.jsp").forward(request, response);
         }
 
         request.setAttribute("auth_error","Incorrect email or password");

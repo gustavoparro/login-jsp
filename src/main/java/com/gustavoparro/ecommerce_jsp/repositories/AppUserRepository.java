@@ -17,17 +17,16 @@ public class AppUserRepository {
         connection = DatabaseConnection.getConnection();
     }
 
-    public Optional<AppUser> authenticateUser(AppUser user) {
+    public Optional<AppUser> findUserByEmail(String email) {
         PreparedStatement preparedStatement;
         String sql = """
                 SELECT * FROM public.app_user
-                WHERE email like ? AND password like ?
+                WHERE email like ?
                 ORDER BY id ASC
                 """;
         try {
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, user.getEmail());
-            preparedStatement.setString(2, user.getPassword());
+            preparedStatement.setString(1, email);
 
             return buildAppUser(preparedStatement.executeQuery());
         } catch (SQLException exception) {
