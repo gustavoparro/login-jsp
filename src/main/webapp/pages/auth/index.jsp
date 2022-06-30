@@ -12,19 +12,25 @@
     <div class="w-25 py-5 px-3 bg-light rounded">
         <h1 class="text-center mb-2">Login</h1>
 
-        <h4 class="text-center mb-1">${ auth_error }</h4>
-
-        <form action="auth" method="post" class="w-100">
+        <form action="auth" method="post" class="w-100 py-5 needs-validation" novalidate>
             <input type="hidden" name="url" value="<%= request.getParameter("url") %>">
 
             <div class="mb-3">
                 <label for="email" class="form-label">E-mail:</label>
-                <input type="email" name="email" id="email" class="form-control">
+                <input type="email" name="email" id="email" class="form-control" required>
+
+                <div class="invalid-feedback">
+                    Please enter your email.
+                </div>
             </div>
 
             <div class="mb-3">
                 <label for="password" class="form-label">Password:</label>
-                <input type="password" name="password" id="password" class="form-control">
+                <input type="password" name="password" id="password" class="form-control" required>
+
+                <div class="invalid-feedback">
+                    Please enter your password.
+                </div>
             </div>
 
             <input type="submit" value="Sign in" class="w-100 btn btn-primary">
@@ -32,5 +38,26 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        (() => {
+            'use strict'
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
+
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
 </body>
 </html>
